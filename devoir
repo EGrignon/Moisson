@@ -1,0 +1,66 @@
+#coding: utf-8
+
+import csv
+import requests 
+from bs4 import BeautifulSoup 
+
+fichier = "Moisson_cbj.csv"
+
+#Cette adresse me donne une liste de chaque saison de chaque joueur
+#qui joue présentement pour les Blue Jackets de Columbus.
+url = "https://www.hockey-reference.com/teams/CBJ/2018.html"
+contenu = requests.get(url)
+page = BeautifulSoup(contenu.text,"html.parser")
+
+#Je crée une boucle qui ira chercher de l'information
+#présente dans les tableaux
+for joueur in page.find_all("tr"):
+	print(joueur.a)
+#J'ai essayé plusieurs fois de trouver un moyen d'isoler seulement les éléments
+#du premier tableau, mais en vain. Voici des exemples de lignes que j'ai
+#essayées à la place de la ligne 18. Je ne sais vraiment pas si j'étais dans le
+#champ complètement ou si l'une d'entre elles était près de la solution. À noter
+#que dans le code html, le tableau que je cherchais avait un id="all_roster" alors
+#que les autres avaient d'autres nomes. Ils avaient tous la même classe par contre.
+#print(page.find("div", id_="all_roster").tr)
+#print(page.find("div", id_="all_roster")joueur.a)
+#print(page.find("div", id_="all_roster", data-stat_="player")joueur)
+#C'est donc dire que pour l'instant, mon moissonage me donne tous les noms des joueurs
+#trois fois, dans différents ordres selon les tableaux dont sont extraits les noms.
+#Il me donne aussi les href qui me permetteraient, j'imagine, d'accéder à leurs pages
+#respectives sur le site. À noter que le second tableau me permet d'obtenir des joueurs
+#qui ont été retirés du premier, puisqu'ils ne jouent présentement pas avec l'équipe - soit
+#parce qu'ils ont été échangé durant la saison ou qu'ils évoluent présentement dans la ligue
+#américaine.
+
+#J'essaie de trouver une façon d'utiliser ce href pour mon 
+for joueur in page.find_all("tr"):
+	for page_joueur in range(27):
+		url = "https://www.hockey-reference.com{joueur.a:href}"
+		print(url)
+
+		#coding: utf-8
+
+import csv
+import requests 
+from bs4 import BeautifulSoup 
+
+fichier = "Moisson_cbj.csv"
+
+#Cette adresse me donne une liste de chaque saison de chaque joueur
+#qui joue présentement pour les Blue Jackets de Columbus.
+url = "https://www.hockey-reference.com/teams/CBJ/2018.html"
+contenu = requests.get(url)
+page = BeautifulSoup(contenu.text,"html.parser")
+
+#J'essaie de trouver un façon d'utiliser ce href pour accéder aux pages
+url_joueur = page.find_all("tr", "href")
+for lien in url_joueur:
+	nom = []
+	lien = lien.a["href"]
+	lien_joueur = "https://www.hockey-reference.com" + lien
+	print(lien_joueur)
+#autre essai
+for joueur in page.find_all("tr"):
+	print(joueur.a)
+#Ceci n'a pas fonctionné pour l'instant :(
